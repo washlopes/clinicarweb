@@ -29,30 +29,26 @@ public class ClienteController {
 	private IClienteService clienteService;
 	
 	@GetMapping
-	public ResponseEntity<List <ClienteEntity>> listarClientes() {
-		
-		return ResponseEntity.status(HttpStatus.OK).body(clienteRepository.findAll());
+	public ResponseEntity<List <ClienteEntity>> listarClientes() {		
+		return ResponseEntity.status(HttpStatus.OK).body(clienteService.findAll());
 	}
 	
 	@PostMapping
-	public ResponseEntity<Boolean> cadastrarCliente(@RequestBody ClienteEntity cliente) {
-		try {
-			this.clienteRepository.save(cliente);
-			return ResponseEntity.status(HttpStatus.OK).body(true);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.OK).body(false);
-		}
+	public ResponseEntity<Boolean> cadastrarCliente(@RequestBody ClienteEntity cliente) {		
+		
+		return ResponseEntity.status(HttpStatus.OK).body(clienteService.cadastrarCliente(cliente));
+		
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ClienteEntity> consultarCliente(@PathVariable Long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(this.clienteRepository.findById(id).get());
+		return ResponseEntity.status(HttpStatus.OK).body(this.clienteService.findById(id));
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Boolean> deletarCliente(@PathVariable Long id) {
 		
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(clienteService.excluir(id));
+		return ResponseEntity.status(HttpStatus.OK).body(clienteService.excluir(id));
 				
 	}
 	

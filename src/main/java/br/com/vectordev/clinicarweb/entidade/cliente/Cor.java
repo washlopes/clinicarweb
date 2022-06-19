@@ -1,4 +1,4 @@
-package br.com.vectordev.clinicarweb.model.cliente;
+package br.com.vectordev.clinicarweb.entidade.cliente;
 
 public enum Cor {
 	

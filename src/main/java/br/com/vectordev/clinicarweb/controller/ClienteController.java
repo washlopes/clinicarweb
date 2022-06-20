@@ -2,6 +2,8 @@ package br.com.vectordev.clinicarweb.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.vectordev.clinicarweb.dto.cliente.ClienteDto;
 import br.com.vectordev.clinicarweb.entidade.cliente.ClienteEntity;
 import br.com.vectordev.clinicarweb.repository.cliente.IClienteRepository;
 import br.com.vectordev.clinicarweb.service.cliente.IClienteService;
@@ -34,7 +37,7 @@ public class ClienteController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Boolean> cadastrarCliente(@RequestBody ClienteEntity cliente) {		
+	public ResponseEntity<Boolean> cadastrarCliente(@Valid @RequestBody ClienteDto cliente) {		
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.cadastrarCliente(cliente));		
 	}
 	
@@ -49,7 +52,7 @@ public class ClienteController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<Boolean> atualizaCliente(@RequestBody ClienteEntity cliente) {		
+	public ResponseEntity<Boolean> atualizaCliente(@Valid @RequestBody ClienteDto cliente) {		
 		return ResponseEntity.status(HttpStatus.OK).body(clienteService.atualizar(cliente));		
 	}
 		

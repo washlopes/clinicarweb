@@ -3,10 +3,12 @@ package br.com.vectordev.clinicarweb.service.cliente;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import br.com.vectordev.clinicarweb.dto.cliente.ClienteDto;
 import br.com.vectordev.clinicarweb.entidade.cliente.ClienteEntity;
 import br.com.vectordev.clinicarweb.exception.cliente.ClienteException;
 import br.com.vectordev.clinicarweb.repository.cliente.IClienteRepository;
@@ -18,14 +20,18 @@ public class ClienteService implements IClienteService{
 	private IClienteRepository clienteRepository;
 	
 	@Override
-	public Boolean atualizar(ClienteEntity cliente) {
-		try {
-			
+	public Boolean atualizar(ClienteDto cliente) {
+		try {			
+						
 			ClienteEntity clienteAtual = consultar(cliente.getId());
+			
+			ModelMapper mapper = new ModelMapper();
+			
+			clienteAtual = mapper.map(cliente, ClienteEntity.class);
 			
 			clienteRepository.save(clienteAtual);				
 			
-			return false;
+			return true;
 		} catch (ClienteException c) {
 			throw c;
 		}
@@ -70,9 +76,11 @@ public class ClienteService implements IClienteService{
 	}
 
 	@Override
-	public Boolean cadastrarCliente(ClienteEntity cliente) {
+	public Boolean cadastrarCliente(ClienteDto cliente) {
 		try {
-			this.clienteRepository.save(cliente);
+			ModelMapper mapper = new ModelMapper();
+			ClienteEntity clienteEntity = mapper.map(cliente, ClienteEntity.class);
+			this.clienteRepository.save(clienteEntity);
 			return true;
 		} catch (Exception e) {
 			return false;

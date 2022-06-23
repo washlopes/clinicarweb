@@ -11,9 +11,9 @@ public interface IClienteService {
 	
 	public Boolean excluir(final Long id);
 	
-	public ClienteEntity consultar(final Long id);
+	public ClienteDto consultar(final Long id);
 	
-	public List <ClienteEntity> findAll();
+	public List <ClienteDto> listar();
 	
 	public Boolean cadastrarCliente(final ClienteDto cliente);	
 	

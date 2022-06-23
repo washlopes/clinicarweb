@@ -3,6 +3,7 @@ package br.com.vectordev.clinicarweb.dto.cliente;
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import br.com.vectordev.clinicarweb.entidade.cliente.Cor;
 import br.com.vectordev.clinicarweb.entidade.cliente.EstadoCivil;
@@ -13,23 +14,22 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ClienteDto {
-
 	
 	private Long id;
 	
 	@NotBlank(message="Informe o nome do cliente")
 	private String nome;
 	
-	@NotBlank(message="Informe o sexo do cliente")
+	@NotNull(message="Informe o sexo do cliente")
 	private Sexo sexo;
 	
-	@NotBlank(message="Informe a cor do cliente")
+	@NotNull(message="Informe a cor do cliente")
 	private Cor cor;
 	
-	@NotBlank(message="Informe o estado civil do cliente")
+	@NotNull(message="Informe o estado civil do cliente")
 	private EstadoCivil estadoCivil;
 	
-	@NotBlank(message="Informe a data de nascimento do cliente")
+	@NotNull(message="Informe a data de nascimento do cliente")
 	private LocalDate dataNascimento;
 	
 	@NotBlank(message="Informe o nome da mãe do cliente")
@@ -53,7 +53,7 @@ public class ClienteDto {
 	@NotBlank(message="Informe o nome do município do cliente")
 	private String municipio;
 	
-	@NotBlank(message="Informe o cep do endereço do cliente")
+	@NotNull(message="Informe o cep do endereço do cliente")
 	private Integer cep;
 	
 	

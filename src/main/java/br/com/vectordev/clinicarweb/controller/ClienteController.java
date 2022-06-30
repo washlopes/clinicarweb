@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.vectordev.clinicarweb.dto.cliente.ClienteDto;
-import br.com.vectordev.clinicarweb.entidade.cliente.ClienteEntity;
+import br.com.vectordev.clinicarweb.model.Response;
 import br.com.vectordev.clinicarweb.repository.cliente.IClienteRepository;
 import br.com.vectordev.clinicarweb.service.cliente.IClienteService;
 
@@ -25,15 +26,26 @@ import br.com.vectordev.clinicarweb.service.cliente.IClienteService;
 @RequestMapping("/cliente")
 public class ClienteController {
 
+	private static final String DELETE = "DELETE";
+	private static final String UPDATE = "UPDATE";
+	
 	@Autowired
 	private IClienteRepository clienteRepository;
 	
 	@Autowired
-	private IClienteService clienteService;
+	private IClienteService clienteService;	
+	
+	
 	
 	@GetMapping
-	public ResponseEntity<List <ClienteEntity>> listarClientes() {		
-		return ResponseEntity.status(HttpStatus.OK).body(clienteService.findAll());
+	public ResponseEntity<Response <List <ClienteDto>>> listarClientes() {	
+		Response <List <ClienteDto>> response = new Response <> ();
+		response.setData(this.clienteService.listar());
+		response.setStatusCode(HttpStatus.OK.value());
+		response.add(WebMvcLinkBuilder.linkTo(
+				WebMvcLinkBuilder.methodOn(ClienteController.class)
+				.listarClientes()).withSelfRel());
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@PostMapping
@@ -42,8 +54,19 @@ public class ClienteController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<ClienteEntity> consultarCliente(@PathVariable Long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(this.clienteService.consultar(id));
+	public ResponseEntity<Response<ClienteDto>> consultarCliente(@PathVariable Long id) {
+		Response <ClienteDto> response = new Response <> ();
+		response.setData(this.clienteService.consultar(id));
+		response.setStatusCode(HttpStatus.OK.value());
+		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(
+				ClienteController.class
+				).consultarCliente(id)).withSelfRel());
+		response.add(WebMvcLinkBuilder.linkTo(
+				WebMvcLinkBuilder.methodOn(ClienteController.class)
+				.deletarCliente(id)
+				).withRel(DELETE));
+		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ClienteController.class).atualizaCliente(null)).withRel(UPDATE));
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@DeleteMapping("/{id}")

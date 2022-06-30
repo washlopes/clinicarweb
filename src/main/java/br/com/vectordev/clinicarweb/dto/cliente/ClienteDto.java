@@ -5,15 +5,19 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import br.com.vectordev.clinicarweb.entidade.cliente.Cor;
 import br.com.vectordev.clinicarweb.entidade.cliente.EstadoCivil;
 import br.com.vectordev.clinicarweb.entidade.cliente.Sexo;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ClienteDto {
+@EqualsAndHashCode(callSuper=false)
+public class ClienteDto extends RepresentationModel <ClienteDto>{
 	
 	private Long id;
 	

@@ -1,20 +1,25 @@
 package br.com.vectordev.clinicarweb.service.cliente;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import br.com.vectordev.clinicarweb.controller.ClienteController;
 import br.com.vectordev.clinicarweb.dto.cliente.ClienteDto;
 import br.com.vectordev.clinicarweb.entidade.cliente.ClienteEntity;
 import br.com.vectordev.clinicarweb.exception.cliente.ClienteException;
 import br.com.vectordev.clinicarweb.repository.cliente.IClienteRepository;
 
+@CacheConfig(cacheNames="cliente")
 @Service
 public class ClienteService implements IClienteService{
 
@@ -31,6 +36,8 @@ public class ClienteService implements IClienteService{
 		this.clienteRepository = clienteRepository;
 	}
 	
+	
+	@CacheEvict(key="#cliente.id")
 	@Override
 	public Boolean atualizar(ClienteDto cliente) {
 		try {			
@@ -62,6 +69,7 @@ public class ClienteService implements IClienteService{
 		}
 	}
 
+	@CachePut(key="#id")
 	@Override
 	public ClienteDto consultar(Long id) {	
 		try {
@@ -78,16 +86,29 @@ public class ClienteService implements IClienteService{
 		}	
 	}
 
+	@CachePut(unless="#result.size()<3")
 	@Override
 	public List<ClienteDto> listar() {	
 		try {
-			return this.mapper.map(this.clienteRepository.findAll(),new TypeToken<List<ClienteDto>> () {}.getType());
+			
+			List <ClienteDto> clientesDto = this.mapper.map(this.clienteRepository.findAll(),
+					new TypeToken<List<ClienteDto>> () {}.getType());
+			
+			clientesDto.forEach(cliente -> {
+				cliente.add(WebMvcLinkBuilder.linkTo(
+						WebMvcLinkBuilder.methodOn(
+								ClienteController.class).consultarCliente(cliente.getId())).withSelfRel());
+			});
+			return clientesDto;
+			
+		
 		} catch (Exception e) {
 			throw new ClienteException(MENSAGEM_ERRO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
 
+	
 	@Override
 	public Boolean cadastrarCliente(ClienteDto cliente) {
 		try {

@@ -78,6 +78,16 @@ public class ClienteController {
 	public ResponseEntity<Boolean> atualizaCliente(@Valid @RequestBody ClienteDto cliente) {		
 		return ResponseEntity.status(HttpStatus.OK).body(clienteService.atualizar(cliente));		
 	}
-		
+	
+	@GetMapping("/nome/{nome}")
+	public ResponseEntity <List<ClienteDto>> consultarClientePeloNome(@PathVariable String nome) {
+		Response <List <ClienteDto>> response = new Response <>();
+		List <ClienteDto> clientes = this.clienteService.consultarClientePeloNome(nome);
+		response.setData(clientes);
+		response.setStatusCode(HttpStatus.OK.value());
+		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ClienteController.class)
+				.consultarClientePeloNome(nome)).withSelfRel());
+		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
+	}
 		
 }

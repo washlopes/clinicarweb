@@ -119,6 +119,23 @@ public class ClienteService implements IClienteService{
 		} catch (Exception e) {
 			throw new ClienteException(MENSAGEM_ERRO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}	
+	}
+	
+	@Override
+	public List <ClienteDto> consultarClientePeloNome(String nome) {
+		try {
+			List <ClienteDto> clientes = this.mapper.map(this.clienteRepository
+					.findByNome(nome), new TypeToken<List<ClienteDto>> () {}.getType());
+			
+			clientes.forEach(cliente -> {
+				cliente.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ClienteController.class)
+						.consultarClientePeloNome(cliente.getNome())).withSelfRel());
+			});
+			
+			return clientes;
+		} catch (Exception e) {
+			throw new ClienteException(MENSAGEM_ERRO, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }

@@ -17,5 +17,7 @@ public interface IClienteService {
 	
 	public Boolean cadastrarCliente(final ClienteDto cliente);	
 	
+	public List <ClienteDto> consultarClientePeloNome(final String nome);
+	
 
 }

@@ -2,13 +2,18 @@ package br.com.vectordev.clinicarweb.entidade.cliente;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -16,6 +21,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import br.com.vectordev.clinicarweb.entidade.atendimento.AtendimentoEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -98,5 +104,20 @@ public class ClienteEntity implements Serializable {
 	
 	@Column(name="tel_celular")
 	private String telefoneCelular;	
+	
+	@OneToMany(mappedBy="cliente",
+			cascade = CascadeType.ALL,
+			orphanRemoval=true)	
+	private List <AtendimentoEntity> atendimentos;
+	
+	public void addAtendimento(AtendimentoEntity atendimento) {
+		atendimentos.add(atendimento);
+		atendimento.setCliente(this);
+	}
+	
+	public void removeAtendimento(AtendimentoEntity atendimento) {
+		atendimentos.remove(atendimento);
+		atendimento.setCliente(null);
+	}
 
 }
